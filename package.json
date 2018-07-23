@@ -1,0 +1,18 @@
+{
+  "name": "demo_i18next",
+  "version": "1.0.0",
+  "description": "Demo of https://www.i18next.com",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "i18next": "^11.4.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.2.0"
+  }
+}

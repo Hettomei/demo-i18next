@@ -1,6 +1,8 @@
 const i18next = require('i18next');
 const lng = 'dev';
 
+const maxSlide = 9;
+
 console.log('--------DEBUG---------');
 i18next.init({
     lng,
@@ -12,16 +14,25 @@ i18next.init({
         'dev': ['fr'],
         'default': ['en']
     },
+     interpolation: {
+        format: function(value, format, lng) {
+            if (format === 'uppercase') return value.toUpperCase();
+            if (format === 'capitalize') return value[0].toUpperCase() + value.substring(1);
+            return value;
+        }
+    },
     resources: {
         en: {
             translation: {
-                "hello": "hello world"
+                "hello": "hello world",
+                "profile": "Profile of {{name, uppercase}} - uppercase",
             }
         },
         fr: {
             translation: {
                 "hello": "hello world",
                 "aFallback": "Un fallback francais",
+                "profile": "Profile de {{name, capitalize}} - premiere lettre",
             }
         },
         dev: {
@@ -39,6 +50,16 @@ i18next.init({
                 "item": "{{count}} item",
                 "item_plural": "{{count}} items"
             }
+        },
+        cs: {
+            translation: {
+                "item": "{{count}} item",
+                "item_plural": "{{count}} items",
+                "item_0": "{{count}} items -- 0",
+                "item_1": "{{count}} items -- 1",
+                "item_2": "{{count}} items -- 2",
+                "profile": "Profile of {{name}} - aucune modif",
+            },
         },
     }
 });
@@ -62,11 +83,11 @@ let i = 0;
 function slide(...str) {
     i++
     console.log(`
-######### SLIDE ${i} ############
+######### SLIDE ${i}/${maxSlide} ############
 
 ${str.join('\n')}
 
-######### /SLIDE ${i} ###########
+################################
 
 
 
@@ -89,6 +110,7 @@ Pour les devs :
 - Context (ex: le genre)
 - Fallback
 - Pluralisation
+- Formatting (ex: Mettre en majuscule)
 
 
 Moins connus
@@ -99,7 +121,7 @@ Moins connus
 ///////////////////
 
 slide(`
-Key/Value
+        Key/Value
 
 ${t('hello')}
 `)
@@ -117,7 +139,7 @@ Probleme, 'Mr', besoin du contexte
 ////////////////
 
 slide(`
-Contexte
+        Contexte
 
 ${t('helloContext', { name: 'Timothée', context: 'male' })}
 
@@ -158,39 +180,63 @@ https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_P
 
 Déjà dans i18next https://github.com/i18next/i18next/blob/master/src/PluralResolver.js
 
-Anglais :
+dev :
 ${t('item', { count: 0 })}
 ${t('item', { count: 1 })}
 ${t('item', { count: 2 })}
+
+
+cs :
+${t('item', { count: 0, lng: 'cs' })}
+${t('item', { count: 1, lng: 'cs' })}
+${t('item', { count: 2, lng: 'cs' })}
+${t('item', { count: 3, lng: 'cs' })}
+${t('item', { count: 4, lng: 'cs' })}
+${t('item', { count: 5, lng: 'cs' })}
+${t('item', { count: 6, lng: 'cs' })}
+${t('item', { count: 700, lng: 'cs' })}
 
 `)
 
 //////////
 
-// slide(`
-//  notre code :
+const name = 'tim'
+slide(`
+Formatting
 
-//  if (program.seriesName && seasonNumber && episodeNumber) {
-//      alias = 'DIC_GENERIC_EPISODE_FULL';
-//  } else if (seasonNumber && episodeNumber) {
-//      alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_EP_TITLE';
-//  } else if (episodeName && seasonNumber) {
-//      alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_EP_NR';
-//  } else if (program.eventTitle && episodeName && episodeNumber) {
-//      alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_SEASON';
-//  } else if (episodeNumber) {
-//      alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_SEASON_AND_EP_TITLE';
-//  } else {
-//      alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_SEASON_AND_EP_NR';
-//  }
+On ne connais pas tous les us et coutumes.
+Les traducteurs si.
 
-//  return Locale.getFormattedString({
-//     alias,
-    //     subs: [
-    //         { key: 'seriesName', value: program.eventTitle },
-//         { key: 'seasonNumber', value: seasonNumber },
-    //         { key: 'episode_number', value: episodeNumber },
-    //         { key: 'episodeName', value: episodeName }
-    //     ]
-    // });
-    // `)
+Exemple, imaginons qu'il soit bien vu de mettre le nom du profile
+en uppercase
+    exemple de code sans librairie :
+
+    const name = 'tim'
+    if (lng === 'cs') {
+      return i18n.t('profileUppercase', { name })
+    } else {
+      return i18n.t('profile', { name })
+    }
+
+Peut etre ramplacer par
+
+      return i18n.t('profile', { name })
+
+
+Exemple :
+
+${t('profile', { name, lng: 'fr' })}
+
+${t('profile', { name, lng: 'en' })}
+
+${t('profile', { name, lng: 'cs' })}
+`);
+
+slide(`
+Conclusion
+
+- ne pas reinventer la roue
+- chacun son domaine
+- On peut combiner contexte, pluralisation, formatting, ajout de plugin
+- besoin de former les traducteurs (? une standardisation existe ?)
+`);

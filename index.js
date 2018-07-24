@@ -1,11 +1,17 @@
 const i18next = require('i18next');
-let i = 0;
 const lng = 'dev';
 
 console.log('--------DEBUG---------');
 i18next.init({
     lng,
     debug: true,
+    fallbackLng: {
+        'de-CH': ['fr', 'it'],
+        'zh-HANT': ['zh-HANS', 'en'],
+        'es': ['fr'],
+        'dev': ['fr'],
+        'default': ['en']
+    },
     resources: {
         en: {
             translation: {
@@ -15,20 +21,21 @@ i18next.init({
         fr: {
             translation: {
                 "hello": "hello world",
+                "aFallback": "Un fallback francais",
             }
         },
         dev: {
             translation: {
                 "hello": "hello world",
-                "error": {
-                    "unspecific": "Something went wrong.",
-                    "404": "The page was not found."
-                },
                 "helloName": "Hello Mr {{name}}",
                 "helloContext": "Hello -- {{name}}",
                 "helloContext_male": "Hello Mr {{name}}",
                 "helloContext_female": "Hello Mrs {{name}}",
                 "helloContext_vulcain": "Hello master {{name}}",
+                "error": {
+                    "unspecific": "Something went wrong.",
+                    "404": "The page was not found."
+                },
             }
         },
     }
@@ -39,7 +46,7 @@ const t = (key, args) => {
         code += `, ${JSON.stringify(args)}`
     }
 
-return `code:
+    return `code:
   i18n.t(${code})
 translate in '${lng}':
   ${i18next.t(key, args)}`;
@@ -47,6 +54,8 @@ translate in '${lng}':
 
 console.log('--------/DEBUG---------');
 
+
+let i = 0;
 
 function slide(...str) {
     i++
@@ -118,30 +127,58 @@ ${t('helloContext', { name: 'gvfdfgd', context: 'unknown' })}
 ${t('helloContext', { context: 'unknown' })}
 `)
 
+//////////
+
+const error1 = 404
+const error2 = 405
 slide(`
- notre code :
+Fallback
 
- if (program.seriesName && seasonNumber && episodeNumber) {
-     alias = 'DIC_GENERIC_EPISODE_FULL';
- } else if (seasonNumber && episodeNumber) {
-     alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_EP_TITLE';
- } else if (episodeName && seasonNumber) {
-     alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_EP_NR';
- } else if (program.eventTitle && episodeName && episodeNumber) {
-     alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_SEASON';
- } else if (episodeNumber) {
-     alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_SEASON_AND_EP_TITLE';
- } else {
-     alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_SEASON_AND_EP_NR';
- }
+- Le classique, une trad n'existe pas, je la cherche dans une autre langue
+${t(`aFallback`, { lng: 'en' })}
 
- return Locale.getFormattedString({
-    alias,
-    subs: [
-        { key: 'seriesName', value: program.eventTitle },
-        { key: 'seasonNumber', value: seasonNumber },
-        { key: 'episode_number', value: episodeNumber },
-        { key: 'episodeName', value: episodeName }
-    ]
-});
+${t(`aFallback`)}
+
+- Forcer un defaut
+${t([`error.${error1}`, 'error.unspecific'])}
+
+${t([`error.${error2}`, 'error.unspecific'])}
 `)
+
+
+//////////
+
+slide(`
+Pluralisation
+
+`)
+
+//////////
+
+// slide(`
+//  notre code :
+
+//  if (program.seriesName && seasonNumber && episodeNumber) {
+//      alias = 'DIC_GENERIC_EPISODE_FULL';
+//  } else if (seasonNumber && episodeNumber) {
+//      alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_EP_TITLE';
+//  } else if (episodeName && seasonNumber) {
+//      alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_EP_NR';
+//  } else if (program.eventTitle && episodeName && episodeNumber) {
+//      alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_SEASON';
+//  } else if (episodeNumber) {
+//      alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_SEASON_AND_EP_TITLE';
+//  } else {
+//      alias = 'DIC_GENERIC_EPISODE_FULL_WITHOUT_SEASON_AND_EP_NR';
+//  }
+
+//  return Locale.getFormattedString({
+//     alias,
+//     subs: [
+//         { key: 'seriesName', value: program.eventTitle },
+//         { key: 'seasonNumber', value: seasonNumber },
+//         { key: 'episode_number', value: episodeNumber },
+//         { key: 'episodeName', value: episodeName }
+//     ]
+// });
+// `)

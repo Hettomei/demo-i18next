@@ -36,6 +36,8 @@ i18next.init({
                     "unspecific": "Something went wrong.",
                     "404": "The page was not found."
                 },
+                "item": "{{count}} item",
+                "item_plural": "{{count}} items"
             }
         },
     }
@@ -151,6 +153,16 @@ ${t([`error.${error2}`, 'error.unspecific'])}
 slide(`
 Pluralisation
 
+CZ a des regles etrange, voir :
+https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals
+
+Déjà dans i18next https://github.com/i18next/i18next/blob/master/src/PluralResolver.js
+
+Anglais :
+${t('item', { count: 0 })}
+${t('item', { count: 1 })}
+${t('item', { count: 2 })}
+
 `)
 
 //////////
@@ -174,11 +186,11 @@ Pluralisation
 
 //  return Locale.getFormattedString({
 //     alias,
-//     subs: [
-//         { key: 'seriesName', value: program.eventTitle },
+    //     subs: [
+    //         { key: 'seriesName', value: program.eventTitle },
 //         { key: 'seasonNumber', value: seasonNumber },
-//         { key: 'episode_number', value: episodeNumber },
-//         { key: 'episodeName', value: episodeName }
-//     ]
-// });
-// `)
+    //         { key: 'episode_number', value: episodeNumber },
+    //         { key: 'episodeName', value: episodeName }
+    //     ]
+    // });
+    // `)

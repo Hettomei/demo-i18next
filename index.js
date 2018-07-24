@@ -214,6 +214,8 @@ en uppercase
     const name = 'tim'
     if (lng === 'cs') {
       return i18n.t('profileUppercase', { name })
+      // Or
+      // return i18n.t('profile', { name: name.toUpperCase() })
     } else {
       return i18n.t('profile', { name })
     }
